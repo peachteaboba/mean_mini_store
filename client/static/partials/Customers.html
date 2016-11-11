@@ -1,0 +1,29 @@
+<div ng-controller="CustomerController">
+    <div class='wrapper'>
+        <div class="add-customer">
+            <h1>Add a new customer</h1>
+            <div class="form">
+                <form name="adminForm" novalidate>
+                    <div class="input-field">
+                        <input class='form1 has-error' ng-class="{ 'no-error' : adminForm.name.$valid && adminForm.name.$dirty && nameUnique == 1 }" name='name' type="text" ng-model="new_customer.name" placeholder="name" ng-minlength="3" ng-change="verifyDuplicate(new_customer.name)" required>
+                        <img class="icon" src="static/img/user.png">
+                    </div>
+                </form>
+            </div>
+            <a class="submit-is-good hvr-border-fade-green" ng-show="(adminForm.$valid && nameUnique == 1)" ng-click="addCustomer(new_customer, adminForm.$valid)" href="#/Customers">Submit</a>
+        </div>
+
+
+        <div class="show-all-users-admin">
+            <h1>Show all customers</h1>
+            <input class='form2' type="text" ng-model="filter_name" placeholder="search name..">
+            <ul>
+                <li ng-repeat="customer in customers | filter: filter_name">
+                    <span class="name">{{customer.name}}</span>
+                    <span class="date">{{customer.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>
+                    <a class="hvr-border-fade-red delete-btn" ng-click='removeCustomer(customer._id)' href="#/Customers">Delete</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

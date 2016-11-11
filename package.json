@@ -1,0 +1,13 @@
+{
+  "name": "FullMean_mini_store",
+  "version": "0.0.1",
+  "description": "Full Mean assignment",
+  "main": "server.js",
+  "author": "peachteaboba",
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "mongoose": "latest",
+    "socket.io": "latest"
+  }
+}

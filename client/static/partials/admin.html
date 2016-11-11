@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users</title>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>-->
+    <link rel='stylesheet' href='static/css/admin.css'>
+
+</head>
+<body ng-controller="UsersController">
+    <div class='wrapper'>
+
+        <div class="add-user-admin">
+            <h1>Add User</h1>
+            <div class="form">
+                <form name="adminForm" novalidate>
+
+
+                    <div class="input-field">
+                        <input class='form1' ng-class="{ 'has-error' : adminForm.name.$invalid && adminForm.name.$dirty, 'no-error' : adminForm.name.$valid && adminForm.name.$dirty  }" name='name' type="text" ng-model="new_user.name" placeholder="name" ng-minlength="3" required>
+                        <img src="static/img/user.png">
+                    </div>
+                    <div class="input-field" >
+
+
+                        <input class='form1' ng-class="{ 'has-error' : adminForm.email.$invalid && adminForm.email.$dirty, 'no-error' : adminForm.email.$valid && adminForm.email.$dirty  }" name="email" type="email" ng-model="new_user.email" placeholder="email" required>
+                        <img src="static/img/email.png">
+                    </div>
+
+                </form>
+            </div>
+            <div>
+                <a class="submit-is-good hvr-border-fade-green" ng-hide="adminForm.$invalid" ng-click="addUser(new_user, adminForm.$valid)" href="#/admin">Submit</a>
+            </div>
+            <!--<p>The input's valid state is:</p>-->
+            <!--<h1>{{adminForm.name.$valid}}</h1>-->
+            <!--<h1>{{adminForm.email.$valid}}</h1>-->
+            <!--<h1>{{adminForm.$valid}}</h1>-->
+
+                <!--<input class='btn1' type="submit" ng-click="addUser()">-->
+
+        </div>
+
+        <div class="show-all-users-admin">
+            <h1>All Users Info</h1>
+
+            <ul>
+                <!-- here is where we are going to display users -->
+                <li ng-repeat="user in users | filter: filter_name">
+                    <span class="name">{{user.name}}</span>
+                    <span class="email">{{user.email}}</span>
+                    <span class="date">{{user.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>
+
+
+
+                    <a class="hvr-border-fade-red delete-btn" ng-click='removeUser(user._id)' href="#/admin">Delete</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

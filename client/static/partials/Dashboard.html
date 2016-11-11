@@ -1,0 +1,47 @@
+<div ng-controller="DashboardController">
+    <div class='wrapper'>
+        <div class="show-products-dashboard">
+            <h1>All Products</h1>
+            <div class="search-products">
+                <input class='form2' type="text" ng-model="filter_product_name" placeholder="search product..">
+            </div>
+
+            <div class='product' ng-repeat="product in products | filter: filter_product_name">
+                <img class='product-img' src="{{product.img_url}}">
+                <span class="name">{{product.name}}</span><br>
+                <span class="quantity">({{product.initial_quantity}}) left</span><br>
+
+            </div>
+        </div>
+
+        <div class="info-dashboard">
+            <div class="show-all-customers-dashboard">
+                <h1>All Customers</h1>
+                <input class='form2' type="text" ng-model="filter_customer_name" placeholder="search customer..">
+                <ul>
+                    <li ng-repeat="customer in customers | filter: filter_customer_name">
+                        <span class="name">{{customer.name}}</span>
+                        <span class="date">{{customer.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>
+
+                    </li>
+                </ul>
+            </div>
+            <div class="show-all-orders-dashboard">
+                <h1>All Orders</h1>
+                <input class='form2' type="text" ng-model="filter_order_name" placeholder="search order..">
+                <ul>
+                    <li ng-repeat="order in orders | filter: filter_order_name">
+                        <span class="name">{{order.customer_name}}</span>
+                        <span class="quantity">{{order.quantity}}</span>
+                        <span class="product-color">{{order.product}}</span>
+                        <span class="date">{{order.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>
+
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>

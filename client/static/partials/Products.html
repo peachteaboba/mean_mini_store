@@ -1,0 +1,43 @@
+<div ng-controller="ProductController">
+    <div class='wrapper'>
+
+
+        <div class="add-product">
+            <h1>Add a new product</h1>
+            <div class="product-form">
+                <form name="adminForm" novalidate>
+                    <div class="input-field">
+                        <input class='form2 has-error' ng-class="{ 'no-error' : adminForm.name.$valid && adminForm.name.$dirty && nameUnique == 1 }" name='name' type="text" ng-model="new_product.name" placeholder="name" ng-minlength="3" required>
+                        <input class='form2 has-error' ng-class="{ 'no-error' : adminForm.img_url.$valid && adminForm.img_url.$dirty}" name='img_url' type="text" ng-model="new_product.img_url" placeholder="image URL" required>
+                        <textarea class="text-area2" name='description' ng-model="new_product.description" placeholder="enter optional description here..."></textarea>
+                        <input class='form2 has-error' ng-class="{ 'no-error' : adminForm.initial_quantity.$valid && adminForm.initial_quantity.$dirty}" name='initial_quantity' type="number" ng-model="new_product.initial_quantity" placeholder="initial quantity" required>
+                    </div>
+                </form>
+            </div>
+            <a class="submit-is-good hvr-border-fade-green" ng-hide="adminForm.$invalid" ng-click="addProduct(new_product, adminForm.$valid)" href="#/Products">Submit</a>
+        </div>
+
+
+
+
+        <div class="show-products">
+            <h1>Show products</h1>
+
+            <div class="search-products">
+                <input class='form2' type="text" ng-model="filter_name" placeholder="search products..">
+            </div>
+
+            <div class='product' ng-repeat="product in products | filter: filter_name">
+                <img class='product-img' src="{{product.img_url}}">
+                <span class="name">{{product.name}}</span><br>
+                <span class="quantity">({{product.initial_quantity}}) left</span><br>
+                <!--<span class="date">{{product.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>-->
+                <a class="hvr-border-fade-red delete-btn" ng-click='removeProduct(product._id)' href="#/Products">Delete</a>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>

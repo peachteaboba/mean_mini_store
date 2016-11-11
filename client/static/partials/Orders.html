@@ -1,0 +1,40 @@
+<div ng-controller="OrderController">
+    <div class='wrapper'>
+        <div class="add-customer">
+            <h1>Add a new order</h1>
+            <div class="form">
+                <form name="adminForm" novalidate>
+
+                    <select ng-model="new_order.customer_name" required>
+                        <option ng-repeat="customer in customers">
+                            {{customer.name}}
+                        </option>
+                    </select>
+                    <select ng-model="new_order.quantity" required>
+                        <option ng-repeat="q in quantity">
+                            {{q.num}}
+                        </option>
+                    </select>
+                    <select ng-model="new_order.product" ng-options="product.name for product in products" required>
+                    </select>
+
+                </form>
+            </div>
+            <a class="submit-is-good hvr-border-fade-green" ng-hide="adminForm.$invalid" ng-click="addOrder(new_order, adminForm.$valid)" href="#/Orders">Submit</a>
+        </div>
+
+        <div class="show-all-users-admin">
+            <h1>Show all orders</h1>
+            <input class='form2' type="text" ng-model="filter_name" placeholder="search order..">
+            <ul>
+                <li ng-repeat="order in orders | filter: filter_name">
+                    <span class="name">{{order.customer_name}}</span>
+                    <span class="quantity">{{order.quantity}}</span>
+                    <span class="product-color">{{order.product}}</span>
+                    <span class="date">{{order.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}</span>
+                    <a class="hvr-border-fade-red delete-btn" ng-click='removeOrder(order._id)' href="#/Orders">Delete</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

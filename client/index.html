@@ -1,0 +1,359 @@
+<html ng-app="customer_and_orders_app">
+<head>
+    <title>mini_MEAN_store</title>
+    <link rel='stylesheet' href='static/css/index.css'>
+    <link rel='stylesheet' href='static/css/reset.css'>
+    <link rel='stylesheet' href='static/css/Customers.css'>
+    <link rel='stylesheet' href='static/css/hover/hover.css'>
+    <link href='https://fonts.googleapis.com/css?family=Autour+One' rel='stylesheet' type='text/css'>
+    <!-- require angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+    <!-- load momentJS (required for angular-moment) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <!-- load angular-moment -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-moment/0.9.0/angular-moment.min.js"></script>
+    <script>
+        // PUT ANGULAR CODE HERE
+
+        // Let's create our angular module
+        var customer_and_orders_app = angular.module('customer_and_orders_app', ['angularMoment', 'ngRoute']);
+
+        //  use the config method to set up routing:
+        customer_and_orders_app.config(function ($routeProvider) {
+            $routeProvider
+                    .when('/Dashboard',{
+                        templateUrl: 'static/partials/Dashboard.html'
+                    })
+                    .when('/Products',{
+                        templateUrl: 'static/partials/Products.html'
+                    })
+                    .when('/Customers',{
+                        templateUrl: 'static/partials/Customers.html'
+                    })
+                    .when('/Orders',{
+                        templateUrl: 'static/partials/Orders.html'
+                    })
+                    .when('/',{
+                        templateUrl: 'static/partials/Dashboard.html'
+                    })
+                    .otherwise({
+                        redirectTo: 'static/partials/Dashboard.html'
+                    });
+        });
+
+
+        // create the CustomerFactory
+        customer_and_orders_app.factory('CustomerFactory', function($http) {
+            var factory = {};
+            var customers = [];
+
+
+            //Restful syntax: index = get all that object
+            factory.index = function(callback) {
+                $http.get('/customers').success(function(output) {
+                    customers = output;
+                    callback(customers);
+                })
+            };
+
+
+            // Restful syntax: create = add one to that object
+            factory.create = function(info, callback) {
+                $http.post('/addCustomer', info).success( function(output) {
+                    customers = output;
+                    callback(customers);
+                });
+            };
+
+            // Restful syntax: delete = deletes a friend that has an _id from req(uest).params.id
+            factory.delete = function(id, callback) {
+                $http.get('/customer/'+ id +'/delete').success( function(output) {
+                    customers = output;
+                    callback(customers);
+                });
+            };
+
+
+            return factory;
+        });
+
+        // create the OrderFactory
+        customer_and_orders_app.factory('OrderFactory', function($http) {
+            var factory = {};
+            var orders = [];
+
+
+            //Restful syntax: index = get all that object
+            factory.index = function(callback) {
+                $http.get('/orders').success(function(output) {
+                    orders = output;
+                    callback(orders);
+                })
+            };
+
+
+            // Restful syntax: create = add one to that object
+            factory.create = function(info, callback) {
+                $http.post('/addOrder', info).success( function(output) {
+                    orders = output;
+                    callback(orders);
+                });
+            };
+
+            // Restful syntax: delete = deletes a friend that has an _id from req(uest).params.id
+            factory.delete = function(id, callback) {
+                $http.get('/order/'+ id +'/delete').success( function(output) {
+                    orders = output;
+                    callback(orders);
+                });
+            };
+
+
+            return factory;
+        });
+
+        // create the ProductFactory
+        customer_and_orders_app.factory('ProductFactory', function($http) {
+            var factory = {};
+            var products = [];
+
+
+            //Restful syntax: index = get all that object
+            factory.index = function(callback) {
+                $http.get('/products').success(function(output) {
+                    products = output;
+                    callback(products);
+                })
+            };
+
+
+            // Restful syntax: create = add one to that object
+            factory.create = function(info, callback) {
+                $http.post('/addProduct', info).success( function(output) {
+                    products = output;
+                    callback(products);
+                });
+            };
+
+            // Restful syntax: delete = deletes a friend that has an _id from req(uest).params.id
+            factory.delete = function(id, callback) {
+                $http.get('/product/'+ id +'/delete').success( function(output) {
+                    products = output;
+                    callback(products);
+                });
+            };
+
+            factory.buy = function(info, callback) {
+
+                $http.get('/product/'+ info.product._id + '/' + info.quantity + '/buy', info).success( function(output) {
+                    products = output;
+                    callback(products);
+                });
+            };
+
+
+
+
+
+
+
+            return factory;
+        });
+
+
+
+        // CustomerController code!
+        customer_and_orders_app.controller('CustomerController', function($scope, CustomerFactory) {
+            $scope.customers = [];
+
+            CustomerFactory.index(function(data) {
+                $scope.customers = data;
+            });
+
+
+            $scope.addCustomer = function(input, validation) {
+                if(validation == true) {
+                    CustomerFactory.create(input, function (data) {
+                        $scope.customers = data;
+                        $scope.new_customer = {};
+                    });
+                }
+                else{
+                    alert("Form.. Y U No Validated??");
+                }
+            };
+
+            $scope.removeCustomer = function (id){
+                CustomerFactory.delete(id, function(data) {
+                    $scope.customers = data;
+                });
+            };
+
+            $scope.verifyDuplicate = function(InputName) {
+                var nameList = [];
+                $scope.nameUnique = 1;
+                for (var i=0; i<$scope.customers.length; i++){   // put all customer names into an array
+                    nameList.push($scope.customers[i].name);
+                }
+                for (var j=0; j<nameList.length; j++){    // check if the input name is already taken
+                    if(InputName == nameList[j]){
+                        $scope.nameUnique = 0;
+                        break;
+                    }
+                }
+            };
+        });  // end CustomerController
+
+
+        // OrderController code!
+        customer_and_orders_app.controller('OrderController', function($scope, CustomerFactory, OrderFactory, ProductFactory) {
+
+            $scope.quantity = [
+                {num: 1},
+                {num: 2},
+                {num: 3},
+                {num: 4},
+                {num: 5}
+            ];
+
+
+
+            $scope.customers = [];
+            $scope.orders = [];
+            $scope.products = [];
+
+
+            CustomerFactory.index(function(data) {
+                $scope.customers = data;
+            });
+            ProductFactory.index(function(data) {
+                $scope.products = data;
+            });
+            OrderFactory.index(function(data) {
+                $scope.orders = data;
+            });
+
+
+            $scope.addOrder = function(input, validation) {
+                if(validation == true) {
+
+
+//                    console.log(input);
+
+
+                    OrderFactory.create(input, function (data) {
+                        $scope.orders = data;
+                        $scope.new_order = {};
+                    });
+
+
+                    ProductFactory.buy(input, function (data) {
+                        $scope.products = data;
+                    });
+
+
+
+
+                }
+                else{
+                    alert("Form.. Y U No Validated??");
+                }
+            };
+
+            $scope.removeOrder = function (id){
+                OrderFactory.delete(id, function(data) {
+                    $scope.orders = data;
+                });
+            };
+
+        });  // end OrderController
+
+        // ProductController code!
+        customer_and_orders_app.controller('ProductController', function($scope, ProductFactory) {
+            $scope.products = [];
+
+            ProductFactory.index(function(data) {
+                $scope.products = data;
+            });
+
+
+            $scope.addProduct = function(input, validation) {
+                if(validation == true) {
+
+//                    $scope.new_product
+
+                    ProductFactory.create(input, function (data) {
+                        $scope.products = data;
+                        $scope.new_product = {};
+                    });
+
+
+
+
+                }
+                else{
+                    alert("Form.. Y U No Validated??");
+                }
+            };
+
+            $scope.removeProduct = function (id){
+                ProductFactory.delete(id, function(data) {
+                    $scope.products = data;
+                });
+            };
+
+        });  // end ProductController
+
+        // DashboardController code!
+        customer_and_orders_app.controller('DashboardController', function($scope, CustomerFactory, OrderFactory, ProductFactory) {
+            $scope.customers = [];
+            $scope.orders = [];
+            $scope.products = [];
+
+
+            CustomerFactory.index(function(data) {
+                $scope.customers = data;
+            });
+            ProductFactory.index(function(data) {
+                $scope.products = data;
+            });
+            OrderFactory.index(function(data) {
+                $scope.orders = data;
+            });
+
+
+        });  // end DashboardController
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</head>
+<!-- everything in the body is going to use the friends controller (this gives us access to the friends controller $scope) -->
+<body>
+    <div class="header">
+        <a class="hvr-border-fade-orange hvr-buzz-out header-btn-dashboard" href="#/Dashboard">Dashboard</a>
+        <a class="hvr-border-fade-red hvr-buzz-out header-btn-products" href="#/Products">Products</a>
+        <a class="hvr-border-fade-blue hvr-buzz-out header-btn-profile" href="#/Customers">Customers</a>
+        <a class="hvr-border-fade-green hvr-buzz-out header-btn" href="#/Orders">Orders</a>
+    </div>
+    <div ng-view=""></div>
+
+
+
+
+
+
+
+
+</body>
+</html>
